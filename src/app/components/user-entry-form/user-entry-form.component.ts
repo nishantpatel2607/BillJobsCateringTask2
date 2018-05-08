@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewContainerRef } from '@angular/core';
+import { Component, OnInit, ViewContainerRef, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
 import { IUser } from '../../models/Iuser';
 import { UserService } from '../../services/users.service';
@@ -14,6 +14,9 @@ import { ToastsManager } from 'ng2-toastr';
   styleUrls: ['./user-entry-form.component.css']
 })
 export class UserEntryFormComponent implements OnInit {
+
+//This event will be raised to notify parent component that the record has been saved  
+@Output('recordSaved') RecordSaved = new EventEmitter(); 
 
   user: IUser = {
     "userId":0,
@@ -48,8 +51,6 @@ export class UserEntryFormComponent implements OnInit {
   }
 
 
-
-
   //getter properties to refer form controls
   get firstName(): AbstractControl{
     return this.userForm.get('firstName');
@@ -75,9 +76,13 @@ export class UserEntryFormComponent implements OnInit {
       .subscribe((response) => {
         if (response.ok){
           this.toastr.success('User saved successfully.');
+          this.resetForm();
+          
         }
       },(error: AppError) => {
         this.handleError(error);
+      },()=> {
+        this.RecordSaved.emit();
       })
 
     }else {
@@ -85,9 +90,13 @@ export class UserEntryFormComponent implements OnInit {
       .subscribe((response) => {
         if (response.ok){
           this.toastr.success('User updated successfully.');
+          this.resetForm();
+          
         }
       },(error: AppError) => {
         this.handleError(error);
+      },() => {
+        this.RecordSaved.emit();
       })
 
     }
@@ -95,6 +104,10 @@ export class UserEntryFormComponent implements OnInit {
   }
 
   cancelForm(){
+    this.resetForm();
+  }
+   
+  resetForm(){
     this.user = {
       "userId":0,
       "firstName": "",
