@@ -1,10 +1,10 @@
 <div class="container-fluid">
   <div class="row">
     <div class="col-md-8">
-      <userentryform (recordSaved)="recordSaved()"></userentryform>
+      <userentryform (recordSaved)="recordSaved()" [selectedUserId] = "selectedUserId"></userentryform>
     </div>
     <div class="col-md-4">
-      <userslist></userslist>
+      <userslist (recordSelected)= "recordSelected($event)"></userslist>
     </div>
   </div>
 </div>

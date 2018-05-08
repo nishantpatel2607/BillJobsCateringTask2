@@ -7,11 +7,17 @@ import { UsersListComponent } from './components/users-list/users-list.component
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
+  selectedUserId: string;
+
   @ViewChild(UsersListComponent)
   public userListComponent: UsersListComponent;
 
   recordSaved(){
-    console.log('Here');
+    
     this.userListComponent.getUsersList();
+  }
+
+  recordSelected(user){
+    this.selectedUserId = user.userId;
   }
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewContainerRef } from '@angular/core';
+import { Component, OnInit, ViewContainerRef, Output, EventEmitter } from '@angular/core';
 import { UserService } from '../../services/users.service';
 import { IUser } from '../../models/Iuser';
 import { AppError } from '../../errorhandlers/app-error';
@@ -14,6 +14,8 @@ import { ToastsManager } from 'ng2-toastr';
 export class UsersListComponent implements OnInit {
 
   users: IUser[];
+  @Output('recordSelected') RecordSelected = new EventEmitter();
+  
   constructor(private userService: UserService,
     public toastr: ToastsManager, vcr: ViewContainerRef) {
       this.toastr.setRootViewContainerRef(vcr);
@@ -24,7 +26,7 @@ export class UsersListComponent implements OnInit {
   }
 
   getUsersList(){
-    console.log('users list called');
+    
     this.userService.getUsers()
     .subscribe(userList => {
       this.users = userList
@@ -34,7 +36,8 @@ export class UsersListComponent implements OnInit {
   }
 
   selectUser(user){
-    console.log(user);
+    
+    this.RecordSelected.emit({"userId":user.userId});
   }
 
   handleError(error: AppError){
