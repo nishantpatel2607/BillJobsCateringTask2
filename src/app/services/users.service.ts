@@ -9,7 +9,9 @@ import 'rxjs/add/observable/throw';
 import { NotFoundError } from "../errorhandlers/not-found-error";
 import { BadRequestError } from "../errorhandlers/bad-request-error";
 import { AppError } from "../errorhandlers/app-error";
+import { Injectable } from "@angular/core";
 
+@Injectable()
 export class UserService{
     private _apiUrl = environment.serverUrl;
 
