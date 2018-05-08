@@ -10,6 +10,7 @@ import { IUser } from '../../models/Iuser';
 export class UserEntryFormComponent implements OnInit {
 
   user: IUser = {
+    "userId":0,
     "firstName": "",
     "lastName": "",
     "displayName": "",
