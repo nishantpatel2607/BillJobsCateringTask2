@@ -1,3 +1,21 @@
-<p>
-  users-list works!
-</p>
+<div class='panel panel-primary'>
+  <div class='panel-heading' style="height: 60px">
+    Users
+  </div>
+  <div class='panel-body'>
+    <table class='table table-hover'>
+      <thead>
+          <tr>
+            <th>User Names</th>
+            </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of users" (click)="selectUser(user)" >
+          <td>
+            {{user.displayName}}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

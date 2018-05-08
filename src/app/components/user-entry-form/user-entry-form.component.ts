@@ -108,7 +108,7 @@ export class UserEntryFormComponent implements OnInit {
     this.userForm.reset();
   }
 
-  //Here we can show custom dialog for each error.
+  
   handleError(error: AppError){
     if (error instanceof NotFoundError) {
       this.toastr.error ("Requested data not found.");
