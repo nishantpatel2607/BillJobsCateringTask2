@@ -1,0 +1,63 @@
+<div class="well">
+  <form class="data-form" [formGroup]="userForm">
+
+    <div class="form-group">
+      <label for="firstName">First Name</label>
+      <input id="firstName" formControlName="firstName" [(ngModel)]="user.firstName" type="text" class="form-control" />
+      <div *ngIf="firstName.touched && firstName.invalid" class="alert alert-danger">
+            <div *ngIf="firstName.errors.required">Please enter user's first name.</div>
+          </div>
+    </div>
+
+    <div class="form-group">
+      <label for="lastName">Last Name</label>
+      <input id="lastName" formControlName="lastName" [(ngModel)]="user.lastName" type="text" class="form-control" />
+      <div *ngIf="lastName.touched && lastName.invalid" class="alert alert-danger">
+            <div *ngIf="lastName.errors.required">Please enter user's last name.</div>
+          </div>
+    </div>
+
+    <div class="form-group">
+      <label for="displayName">Display Name</label>
+      <input id="displayName" formControlName="displayName" [(ngModel)]="user.displayName" type="text" class="form-control" />
+      <div *ngIf="displayName.touched && displayName.invalid" class="alert alert-danger">
+            <div *ngIf="displayName.errors.required">Please enter user's display name.</div>
+          </div>
+   </div>
+
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input id="email" formControlName="email" [(ngModel)]="user.email" type="email" class="form-control" />
+      <div *ngIf="email.touched && email.invalid" class="alert alert-danger">
+            <div *ngIf="email.errors.required">Please enter email.</div>
+            <div *ngIf="!email.errors.required && email.errors.email">Please enter valid email.</div>
+        </div>
+    </div>
+
+    <div class="form-group">
+      <label for="department">Department</label>
+      <input id="department" formControlName="department" [(ngModel)]="user.department" type="text" class="form-control" />
+    </div>
+
+    <div class="form-group">
+      <label for="team">Team</label>
+      <input id="team" formControlName="team" [(ngModel)]="user.team" type="text" class="form-control" />
+    </div>
+
+    <div class="form-group">
+      <label for="mealPreference">Meal Preference</label>
+      <textarea id="mealPreference" formControlName="mealPreference" [(ngModel)]="user.mealPreference" type="text" class="form-control"></textarea>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-6">
+        <button class="btn btn-primary btn-block" [disabled]="!userForm.valid" (click)="saveForm()">Save</button>
+      </div>
+      <div class="col-sm-6">
+        <div class="hidden-lg hidden-md hidden-sm">&nbsp;</div>
+        <button class="btn btn-block" (click)="cancelForm()">Cancel</button>
+      </div>
+    </div>
+  </form>
+
+</div>
