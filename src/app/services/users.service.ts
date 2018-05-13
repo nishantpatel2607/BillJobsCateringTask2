@@ -19,8 +19,10 @@ export class UserService{
 
     //get list of users
     getUsers():Observable<IUser[]>{
+        
         return this._http.get(this._apiUrl + "/profiles")
         .map((response: Response) => <IUser[]>response.json())
+        //.do((response) => console.log(response))
         .catch(this.handleError);
     }
 

@@ -10,7 +10,7 @@
             </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let user of users" (click)="selectUser(user)" >
+        <tr *ngFor="let user of (users|async)" (click)="selectUser(user)" >
           <td>
             {{user.displayName}}
           </td>

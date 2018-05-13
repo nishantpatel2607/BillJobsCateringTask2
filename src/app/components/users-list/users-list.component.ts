@@ -5,27 +5,38 @@ import { AppError } from '../../errorhandlers/app-error';
 import { NotFoundError } from '../../errorhandlers/not-found-error';
 import { BadRequestError } from '../../errorhandlers/bad-request-error';
 import { ToastsManager } from 'ng2-toastr';
+import { Store } from '@ngrx/store';
+
+import * as fromRoot from '../../reducers/usersreducers';
+import { Observable } from 'rxjs/Observable';
+import { UserListFetchAction, UserListReceivedAction, TESTACTION, UserTestAction } from '../../actions/useractions';
 
 @Component({
   selector: 'userslist',
-  templateUrl: './users-list.component.html', 
+  templateUrl: './users-list.component.html',
   styleUrls: ['./users-list.component.css']
 })
 export class UsersListComponent implements OnInit {
 
-  users: IUser[];
+  //users: IUser[];
+  public users: Observable<IUser[]>
   @Output('recordSelected') RecordSelected = new EventEmitter();
-  
-  constructor(private userService: UserService,
-    public toastr: ToastsManager, vcr: ViewContainerRef) {
-      this.toastr.setRootViewContainerRef(vcr);
-     }
 
-  ngOnInit() {
-    this.getUsersList();
+  constructor(private userService: UserService,
+    public toastr: ToastsManager, vcr: ViewContainerRef,
+    public store: Store<fromRoot.State>) {
+    this.toastr.setRootViewContainerRef(vcr);
+    this.users = store.select(fromRoot.getUsers);
   }
 
-  getUsersList(){
+  ngOnInit() {
+    //this.getUsersList();
+    this.store.dispatch(new UserListFetchAction());
+    this.refreshUsersList();
+  }
+
+ 
+  /* getUsersList(){
     
     this.userService.getUsers()
     .subscribe(userList => {
@@ -33,19 +44,24 @@ export class UsersListComponent implements OnInit {
     },(error: AppError) => {
       this.handleError(error);
     })
+  } */
+
+  selectUser(user) {
+    this.RecordSelected.emit({ "userId": user.userId });
+  } 
+
+  refreshUsersList() {
+    setInterval(() => {
+      this.store.dispatch(new UserListFetchAction());
+    }, 30000);
   }
 
-  selectUser(user){
-    
-    this.RecordSelected.emit({"userId":user.userId});
-  }
-
-  handleError(error: AppError){
+  handleError(error: AppError) {
     if (error instanceof NotFoundError) {
-      this.toastr.error ("Requested data not found.");
+      this.toastr.error("Requested data not found.");
     }
     else if (error instanceof BadRequestError) {
-      this.toastr.error ("Unable to process the request.");
+      this.toastr.error("Unable to process the request.");
     }
     else throw error;
   }

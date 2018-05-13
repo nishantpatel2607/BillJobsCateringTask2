@@ -9,6 +9,10 @@ import { AppErrorHandler } from './errorhandlers/global-error-handler';
 import { UserService } from './services/users.service';
 import {ToastModule} from 'ng2-toastr/ng2-toastr';
 import { UsersListComponent } from './components/users-list/users-list.component';
+import { StoreModule } from '@ngrx/store';
+import { usersReducer } from './reducers/usersreducers';
+import { EffectsModule } from '@ngrx/effects';
+import { UserEffects } from './effects/usereffects';
 
 @NgModule({
   declarations: [
@@ -22,6 +26,8 @@ import { UsersListComponent } from './components/users-list/users-list.component
     FormsModule,
     ReactiveFormsModule,
     HttpModule,
+    StoreModule.forRoot({usersReducer}),
+    EffectsModule.forRoot([UserEffects]),
     ToastModule.forRoot()
   ],
   providers: [

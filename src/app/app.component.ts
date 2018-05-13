@@ -14,7 +14,7 @@ export class AppComponent {
 
   recordSaved(){
     
-    this.userListComponent.getUsersList();
+    //this.userListComponent.getUsersList();
   }
 
   recordSelected(user){
