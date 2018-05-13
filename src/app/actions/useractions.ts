@@ -3,7 +3,8 @@ import { IUser } from '../models/Iuser';
 
 export const GET_USER_LIST = "GET_USER_LIST";
 export const RECEIVED_USER_LIST = "RECEIVED_USER_LIST";
-export const TESTACTION = "TEST_ACTION";
+export const CREATE_USER = "CREATE_USER";
+export const USER_SAVED = "USER_SAVED";
 
 export class UserListFetchAction implements Action {
     type = GET_USER_LIST;
@@ -15,6 +16,16 @@ export class UserListReceivedAction implements Action {
     }
 }
 
-export class UserTestAction implements Action {
-    type = TESTACTION;
+export class CreateUserAction implements Action {
+    type = CREATE_USER;
+    constructor(public payload: IUser) { 
+    }
 }
+
+export class UserSavedAction implements Action {
+    type = USER_SAVED;
+    constructor(public data:any){
+        console.log(data);
+    }
+}
+

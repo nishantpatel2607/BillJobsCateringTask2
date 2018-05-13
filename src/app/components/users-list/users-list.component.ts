@@ -9,7 +9,7 @@ import { Store } from '@ngrx/store';
 
 import * as fromRoot from '../../reducers/usersreducers';
 import { Observable } from 'rxjs/Observable';
-import { UserListFetchAction, UserListReceivedAction, TESTACTION, UserTestAction } from '../../actions/useractions';
+import { UserListFetchAction, UserListReceivedAction } from '../../actions/useractions';
 
 @Component({
   selector: 'userslist',
@@ -25,7 +25,7 @@ export class UsersListComponent implements OnInit {
   constructor(private userService: UserService,
     public toastr: ToastsManager, vcr: ViewContainerRef,
     public store: Store<fromRoot.State>) {
-    this.toastr.setRootViewContainerRef(vcr);
+    this.toastr.setRootViewContainerRef(vcr); 
     this.users = store.select(fromRoot.getUsers);
   }
 
