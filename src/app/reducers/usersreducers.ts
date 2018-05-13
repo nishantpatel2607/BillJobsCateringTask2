@@ -5,10 +5,12 @@ import { IUser } from '../models/Iuser';
 // Application state interface
 export interface State {
     usersList: IUser[];
+    requestSuccess: boolean;
 }
 
 export const INITIAL_STATE: State = { 
-    usersList: []
+    usersList: [],
+    requestSuccess: true
   }
 
 //Selector functions - to get only the part of the application state
@@ -25,6 +27,12 @@ export function usersReducer(state = INITIAL_STATE, action): State {
              return Object.assign({},state,{
                 usersList: action.payload
             });
+        }
+
+        case useractions.USER_SAVED:
+        {
+            console.log (action.payload);
+            return state;
         }
         default:
             return state;

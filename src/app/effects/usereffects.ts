@@ -32,4 +32,12 @@ export class UserEffects {
         this.userService.createUser(action.payload)
         .map(data => new UserSavedAction(data))
     );
+
+    @Effect()
+    updateuser: Observable<Action> = this.actions
+    .ofType(useractions.UPDATE_USER)
+    .switchMap((action:useractions.UpdateUserAction)=>
+        this.userService.updateUser(action.payload)
+        .map(data => new UserSavedAction(data))
+    );
 }

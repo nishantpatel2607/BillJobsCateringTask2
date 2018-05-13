@@ -9,7 +9,7 @@ import { BadRequestError } from '../../errorhandlers/bad-request-error';
 import { ToastsManager } from 'ng2-toastr';
 import { Store } from '@ngrx/store';
 import * as fromRoot from '../../reducers/usersreducers';
-import { CreateUserAction } from '../../actions/useractions';
+import { CreateUserAction, UpdateUserAction } from '../../actions/useractions';
 
 @Component({
   selector: 'userentryform',
@@ -114,7 +114,7 @@ export class UserEntryFormComponent implements OnInit, OnChanges {
         this.store.dispatch(new CreateUserAction(this.user));
 
     } else {
-      this.userService.updateUser(this.user)
+      /* this.userService.updateUser(this.user)
         .subscribe((response) => {
           if (response.ok) {
             this.toastr.success('User updated successfully.');
@@ -124,7 +124,8 @@ export class UserEntryFormComponent implements OnInit, OnChanges {
           this.handleError(error);
         }, () => {
           this.RecordSaved.emit();
-        })
+        }) */
+        this.store.dispatch(new UpdateUserAction(this.user));
     }
   }
 
