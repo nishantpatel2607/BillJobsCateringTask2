@@ -30,7 +30,9 @@ export class UserEffects {
     .ofType(useractions.CREATE_USER)
     .switchMap((action:useractions.CreateUserAction)=>
         this.userService.createUser(action.payload)
-        .map(data => new UserSavedAction(data))
+        .map(data => {
+            
+            return new UserSavedAction(data)})
     );
 
     @Effect()
@@ -38,6 +40,8 @@ export class UserEffects {
     .ofType(useractions.UPDATE_USER)
     .switchMap((action:useractions.UpdateUserAction)=>
         this.userService.updateUser(action.payload)
-        .map(data => new UserSavedAction(data))
+        .map(data => { 
+            //console.log(data);
+            return new UserSavedAction(data)})
     );
 }

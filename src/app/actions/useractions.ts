@@ -31,7 +31,7 @@ export class UpdateUserAction implements Action {
 
 export class UserSavedAction implements Action {
     type = USER_SAVED;
-    constructor(public data:any){
+    constructor(public payload){      
     }
 }
 

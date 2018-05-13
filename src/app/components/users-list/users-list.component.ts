@@ -10,6 +10,8 @@ import { Store } from '@ngrx/store';
 import * as fromRoot from '../../reducers/usersreducers';
 import { Observable } from 'rxjs/Observable';
 import { UserListFetchAction, UserListReceivedAction } from '../../actions/useractions';
+import { Actions } from '@ngrx/effects';
+import * as useractions from '../../actions/useractions';
 
 @Component({
   selector: 'userslist',
@@ -21,12 +23,24 @@ export class UsersListComponent implements OnInit {
   //users: IUser[];
   public users: Observable<IUser[]>
   @Output('recordSelected') RecordSelected = new EventEmitter();
-
+  updateSubscription;
   constructor(private userService: UserService,
     public toastr: ToastsManager, vcr: ViewContainerRef,
-    public store: Store<fromRoot.State>) {
+    public store: Store<fromRoot.State>,
+    public updates: Actions) {
     this.toastr.setRootViewContainerRef(vcr); 
     this.users = store.select(fromRoot.getUsers);
+
+    this.updateSubscription=  updates.ofType(useractions.USER_SAVED)
+    .do((data) => {
+      let res = <any>data;
+      if(res.payload.ok){
+        this.store.dispatch(new UserListFetchAction());
+      } 
+      
+    })
+    .subscribe();
+
   }
 
   ngOnInit() {
