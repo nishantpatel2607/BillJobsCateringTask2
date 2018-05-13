@@ -6,11 +6,22 @@ import { IUser } from '../models/Iuser';
 export interface State {
     usersList: IUser[];
     requestSuccess: boolean;
+    user: IUser;
 }
 
 export const INITIAL_STATE: State = { 
     usersList: [],
-    requestSuccess: true
+    requestSuccess: true,
+    user: {
+        userId:0,
+        email: '', 
+        firstName: '',
+        lastName:'',
+        displayName: '',
+        mealPreference: '',
+        department: '',
+        team: ''
+    }
   }
 
 //Selector functions - to get only the part of the application state
@@ -20,13 +31,20 @@ export const getRequestSuccess = (state) =>  state.usersReducer.requestSuccess;
 
 //Reducer function
 export function usersReducer(state = INITIAL_STATE, action): State {
-    //console.log(action.type);
+    
     switch (action.type) {
   
         case useractions.RECEIVED_USER_LIST:
         {
              return Object.assign({},state,{
                 usersList: action.payload
+            });
+        }
+
+        case useractions.RECEIVED_USER:
+        {
+             return Object.assign({},state,{
+                user: action.payload
             });
         }
 

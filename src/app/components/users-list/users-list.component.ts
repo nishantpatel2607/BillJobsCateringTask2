@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewContainerRef, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, ViewContainerRef, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { UserService } from '../../services/users.service';
 import { IUser } from '../../models/Iuser';
 import { AppError } from '../../errorhandlers/app-error';
@@ -18,7 +18,7 @@ import * as useractions from '../../actions/useractions';
   templateUrl: './users-list.component.html',
   styleUrls: ['./users-list.component.css']
 })
-export class UsersListComponent implements OnInit {
+export class UsersListComponent implements OnInit, OnDestroy {
 
   //users: IUser[];
   public users: Observable<IUser[]>
@@ -28,18 +28,18 @@ export class UsersListComponent implements OnInit {
     public toastr: ToastsManager, vcr: ViewContainerRef,
     public store: Store<fromRoot.State>,
     public updates: Actions) {
-    this.toastr.setRootViewContainerRef(vcr); 
+    this.toastr.setRootViewContainerRef(vcr);
     this.users = store.select(fromRoot.getUsers);
 
-    this.updateSubscription=  updates.ofType(useractions.USER_SAVED)
-    .do((data) => {
-      let res = <any>data;
-      if(res.payload.ok){
-        this.store.dispatch(new UserListFetchAction());
-      } 
-      
-    })
-    .subscribe();
+    this.updateSubscription = updates.ofType(useractions.USER_SAVED)
+      .do((data) => {
+        let res = <any>data;
+        if (res.payload.ok) {
+          this.store.dispatch(new UserListFetchAction());
+        }
+
+      })
+      .subscribe();
 
   }
 
@@ -49,7 +49,7 @@ export class UsersListComponent implements OnInit {
     this.refreshUsersList();
   }
 
- 
+
   /* getUsersList(){
     
     this.userService.getUsers()
@@ -62,12 +62,16 @@ export class UsersListComponent implements OnInit {
 
   selectUser(user) {
     this.RecordSelected.emit({ "userId": user.userId });
-  } 
+  }
 
   refreshUsersList() {
     setInterval(() => {
       this.store.dispatch(new UserListFetchAction());
     }, 30000);
+  }
+
+  ngOnDestroy(): void {
+    this.updateSubscription.unsubscribe();
   }
 
   handleError(error: AppError) {

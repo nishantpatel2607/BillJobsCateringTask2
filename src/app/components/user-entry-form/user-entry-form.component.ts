@@ -9,7 +9,7 @@ import { BadRequestError } from '../../errorhandlers/bad-request-error';
 import { ToastsManager } from 'ng2-toastr';
 import { Store } from '@ngrx/store';
 import * as fromRoot from '../../reducers/usersreducers';
-import { CreateUserAction, UpdateUserAction, UserSavedAction } from '../../actions/useractions';
+import { CreateUserAction, UpdateUserAction, UserSavedAction, UserFetchAction } from '../../actions/useractions';
 import { Actions } from '@ngrx/effects';
 import * as useractions from '../../actions/useractions';
 
@@ -18,11 +18,11 @@ import * as useractions from '../../actions/useractions';
   templateUrl: './user-entry-form.component.html',
   styleUrls: ['./user-entry-form.component.css']
 })
-export class UserEntryFormComponent implements OnInit, OnChanges,OnDestroy {
+export class UserEntryFormComponent implements OnInit, OnChanges, OnDestroy {
 
 
   //This event will be raised to notify parent component that the record has been saved  
- // @Output('recordSaved') RecordSaved = new EventEmitter();
+  // @Output('recordSaved') RecordSaved = new EventEmitter();
 
   @Input('selectedUserId') selectedId: string;
 
@@ -39,12 +39,13 @@ export class UserEntryFormComponent implements OnInit, OnChanges,OnDestroy {
 
   userForm: FormGroup;
   updateSubscription;
+  fetchUserSubscription;
 
   constructor(fb: FormBuilder,
     private userService: UserService,
     public toastr: ToastsManager, vcr: ViewContainerRef,
     public store: Store<fromRoot.State>,
-  public updates: Actions) {
+    public updates: Actions) {
     this.toastr.setRootViewContainerRef(vcr);
     this.userForm = fb.group({
       firstName: ['', Validators.required],
@@ -55,36 +56,43 @@ export class UserEntryFormComponent implements OnInit, OnChanges,OnDestroy {
       department: [''],
       team: ['']
     });
-    
-    this.updateSubscription=  updates.ofType(useractions.USER_SAVED)
-    .do((data) => {
-      let res = <any>data;
-      if(res.payload.ok){
-        this.toastr.success('User saved successfully.');
-        this.resetForm();
-      } else {
-        this.toastr.error("Error occured while saving.");
-      }
-      
-    })
-    .subscribe();
+
+    this.updateSubscription = updates.ofType(useractions.USER_SAVED)
+      .do((data) => {
+        let res = <any>data;
+       
+        if (res.payload.ok) {
+          this.toastr.success('User saved successfully.');
+          this.resetForm();
+        } else {
+          this.toastr.error("Error occured while saving.");
+        }
+
+      })
+      .subscribe();
+
+      this.fetchUserSubscription = updates.ofType(useractions.RECEIVED_USER)
+      .do((data) => {
+        let res = <any>data;
+        
+        this.user = res.payload;
+      })
+      .subscribe();
   }
-
-
 
   ngOnInit() {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    for (let propertyName in changes){
-     
-      if (propertyName === "selectedId"){
-      let id = changes[propertyName].currentValue;
-      if (id !== undefined){
-        this.getUser(id);
+    for (let propertyName in changes) {
+
+      if (propertyName === "selectedId") {
+        let id = changes[propertyName].currentValue;
+        if (id !== undefined) {
+          this.getUser(id);
+        }
       }
-    }
-    
+
     }
   }
 
@@ -106,11 +114,12 @@ export class UserEntryFormComponent implements OnInit, OnChanges,OnDestroy {
   }
 
   getUser(id: string) {
-    this.userService.getUser(id)
+    /* this.userService.getUser(id)
       .subscribe(userData => this.user = userData,
         (error: AppError) => {
           this.handleError(error);
-        })
+        }) */
+        this.store.dispatch(new UserFetchAction(id));
   }
 
   //form operations 
@@ -128,7 +137,7 @@ export class UserEntryFormComponent implements OnInit, OnChanges,OnDestroy {
         }, () => {
           this.RecordSaved.emit();
         }) */
-        this.store.dispatch(new CreateUserAction(this.user));
+      this.store.dispatch(new CreateUserAction(this.user));
 
 
     } else {
@@ -143,8 +152,8 @@ export class UserEntryFormComponent implements OnInit, OnChanges,OnDestroy {
         }, () => {
           this.RecordSaved.emit();
         }) */
-        this.store.dispatch(new UpdateUserAction(this.user));
-        
+      this.store.dispatch(new UpdateUserAction(this.user));
+
     }
   }
 
@@ -166,8 +175,9 @@ export class UserEntryFormComponent implements OnInit, OnChanges,OnDestroy {
     this.userForm.reset();
   }
 
-  ngOnDestroy(){
+  ngOnDestroy(): void {
     this.updateSubscription.unsubscribe();
+    this.fetchUserSubscription.unsubscribe();
   }
 
   handleError(error: AppError) {

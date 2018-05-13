@@ -7,7 +7,7 @@ import 'rxjs/add/operator/switchMap';
 
 import * as useractions from '../actions/useractions';
 import { UserService } from '../services/users.service';
-import { UserListReceivedAction, UserSavedAction } from '../actions/useractions';
+import { UserListReceivedAction, UserSavedAction, UserReceivedAction } from '../actions/useractions';
 
 
 @Injectable()
@@ -23,6 +23,14 @@ export class UserEffects {
     .switchMap(()=>
         this.userService.getUsers()
         .map(data => new UserListReceivedAction(data))
+    );
+
+    @Effect()
+    getuser: Observable<Action> = this.actions
+    .ofType(useractions.GET_USER)
+    .switchMap((action:useractions.UserFetchAction)=>
+        this.userService.getUser(action.payload)
+        .map(data => new UserReceivedAction(data))
     );
 
     @Effect()
